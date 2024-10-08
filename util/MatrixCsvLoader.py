@@ -13,7 +13,7 @@ class MatrixCsvLoader:
             reader = csv.reader(file, delimiter=';')
             next(reader)  # Пропускаем заголовок
             for row in reader:
-                data = list(map(float, row[:-2]))  # Все, кроме последнего элемента
+                data = list(map(float, row[:len(row)-2]))  # Все, кроме последнего элемента
                 label = row[-1][0]  # Последний элемент (метка)
                 result.append(InputData(data, label))
         return result

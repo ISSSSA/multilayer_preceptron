@@ -54,7 +54,7 @@ class MultiLayerPerceptron:
 
             for input_data in dataset:
                 inputs = input_data.data  # Здесь исправлено
-                print(f"Inputs: {inputs}, Label: {input_data}")  # Отладочный вывод
+                print(f"Inputs: {inputs}, Label: {input_data.label}")  # Отладочный вывод
 
                 # Пример использования в train методе MLP:
                 self.forward(inputs)

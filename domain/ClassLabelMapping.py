@@ -14,6 +14,7 @@ class ClassLabelMapping:
 
     @staticmethod
     def from_input_data(input_data):
+        print(input_data.label)
         return ClassLabelMapping.MAPPING[input_data.label]
 
     @staticmethod
