@@ -1,6 +1,3 @@
-import random
-from pathlib import Path
-
 from core.MultiLayerPerceptron import MultiLayerPerceptron
 from domain.ClassLabelMapping import ClassLabelMapping
 from util.MatrixCsvLoader import MatrixCsvLoader
@@ -25,13 +22,8 @@ class MultiLayerPerceptronRunner:
         )
 
     def run(self):
-        # Загрузка и обучение на данных
         training_data = self.load_data(r"C:\\Users\\Воронов Игорь\\Documents\\Dataset\\output_hyped.csv")
         self.mlp.train(training_data)
-
-        # Загрузка данных для тестирования
-        validation_data = self.load_data(r"C:\\Users\\Воронов Игорь\\Documents\\Dataset\\20validation.csv")
-        self.test_model(validation_data)
 
     def load_data(self, file_path):
         matrix_csv_loader = MatrixCsvLoader(file_path)

@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class CrossEntropyLossFunction:
     EPSILON = 1e-15
 
@@ -10,4 +11,3 @@ class CrossEntropyLossFunction:
             log = np.log(predicted[i] + self.EPSILON)
             total_loss -= target_value * log
         return total_loss
-

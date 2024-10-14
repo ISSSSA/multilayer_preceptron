@@ -6,7 +6,7 @@ class Layer:
     def __init__(self, input_size, output_size):
         self.input_size = input_size
         self.output_size = output_size
-        self.neurons = [Neuron(input_size) for _ in range(output_size)]
+        self.neurons = np.array([Neuron(input_size) for _ in range(output_size)])
         self.outputs = np.zeros(output_size)
 
     def forward(self, inputs):

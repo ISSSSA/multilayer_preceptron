@@ -1,6 +1,5 @@
 import random
 from typing import List
-import numpy as np
 from core.Layer import Layer
 
 from configuration.MultiLayerPerceptronConfiguration import MultiLayerPerceptronConfiguration
@@ -9,6 +8,7 @@ from domain.ClassLabelMapping import ClassLabelMapping
 from domain.InputData import InputData
 from loss.LossFunction import LossFunction
 from metrics.MetricsBuilder import MetricsBuilder
+import time
 
 
 class MultiLayerPerceptron:
@@ -48,18 +48,12 @@ class MultiLayerPerceptron:
         metrics_builder = MetricsBuilder()
         for epoch in range(1, MultiLayerPerceptronConfiguration.EPOCH_COUNT + 1):
             total_loss = 0.0
-
             random.shuffle(dataset)
             print(f"Epoch {epoch}:")
-
             for input_data in dataset:
-                inputs = input_data.data  # Здесь исправлено
-                print(f"Inputs: {inputs}, Label: {input_data.label}")  # Отладочный вывод
-
-                # Пример использования в train методе MLP:
+                inputs = input_data.data
                 self.forward(inputs)
                 self.backpropagation(ClassLabelMapping.from_input_data(input_data), inputs)
-
                 guess = self.max_idx(self.layers[-1].get_outputs())
                 metrics_builder.add_value(self.layers[-1].get_outputs(), guess)
 
@@ -69,11 +63,13 @@ class MultiLayerPerceptron:
             print(metrics.format_metrics())
             metrics_builder.clear()
 
-    # В файле core/MultiLayerPerceptron.py
     def compute_loss(self, target_label: int) -> float:
         predicted = self.layers[-1].get_outputs()
         return self.loss_function.calculate_loss(predicted, target_label)
 
+    def predict(self, inputs):
+        return self.max_idx(self.forward(inputs))
+
     @staticmethod
-    def max_idx(arr: np.ndarray) -> int:
+    def max_idx(arr) -> int:
         return list(arr).index(max(arr))

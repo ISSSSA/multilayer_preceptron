@@ -6,6 +6,8 @@ from configuration.MultiLayerPerceptronConfiguration import MultiLayerPerceptron
 
 class Neuron:
     def __init__(self, input_size: int, activation_function: ActivationFunction = None):
+        self.bias = None
+        self.weights = None
         self.input_size = input_size
         self.activation_function = activation_function or MultiLayerPerceptronConfiguration.default_activation_function
         self.initialize_weights_and_bias()
@@ -13,10 +15,9 @@ class Neuron:
         self.input_sum = 0.0
         self.delta = 0.0
 
-    # В файле core/Neuron.py
     def initialize_weights_and_bias(self):
         self.weights = [random.gauss(0, 0.1) for _ in
-                        range(self.input_size)]  # Сделать стандартное отклонение чуть больше
+                        range(self.input_size)]
         self.bias = 0.0
 
     def activate(self, inputs: list) -> float:
