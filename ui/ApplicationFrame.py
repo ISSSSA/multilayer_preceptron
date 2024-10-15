@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Button, Canvas, filedialog, Label, Entry
+from tkinter import Button, Canvas, filedialog, Label, Entry, colorchooser
 from PIL import Image, ImageDraw
 from core.MultiLayerPerceptron import MultiLayerPerceptron
 from domain.ClassLabelMapping import ClassLabelMapping
@@ -25,6 +25,8 @@ class PixelArtApp:
         self.learning_rate = 0.2
         self.loss_function = CrossEntropyLossFunction()
 
+        self.selected_color = "black"
+
         self.canvas = Canvas(main_frame, width=GRID_SIZE * PIXEL_SIZE, height=GRID_SIZE * PIXEL_SIZE)
         self.canvas.grid(row=0, column=0, columnspan=4, padx=5, pady=5)
 
@@ -36,6 +38,9 @@ class PixelArtApp:
 
         self.load_button = Button(main_frame, text="Загрузить изображение", command=self.load_image)
         self.load_button.grid(row=1, column=2, padx=5, pady=5)
+
+        self.color_button = Button(main_frame, text="Выбрать цвет", command=self.choose_color)
+        self.color_button.grid(row=1, column=3, padx=5, pady=5)
 
         self.epochs_label = Label(main_frame, text="Количество эпох:")
         self.epochs_label.grid(row=2, column=0, sticky="e", padx=5, pady=5)
@@ -83,12 +88,12 @@ class PixelArtApp:
 
         if 0 <= x < GRID_SIZE and 0 <= y < GRID_SIZE:
             self.pixels[y][x] = 1 - self.pixels[y][x]
-            color = "white" if self.pixels[y][x] == 0 else "black"
+            color = self.selected_color
             self.canvas.create_rectangle(x * PIXEL_SIZE, y * PIXEL_SIZE,
                                          (x + 1) * PIXEL_SIZE, (y + 1) * PIXEL_SIZE,
                                          fill=color, outline="gray")
 
-            self.draw.point((x, y), fill=self.pixels[y][x])
+            self.draw.point((x, y), fill=color)
 
     def clear_canvas(self):
         self.pixels = [[0 for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
@@ -105,6 +110,12 @@ class PixelArtApp:
                                              (x + 1) * PIXEL_SIZE, (y + 1) * PIXEL_SIZE,
                                              fill=color, outline="gray")
 
+    def choose_color(self):
+        # Открываем диалог выбора цвета
+        color_code = colorchooser.askcolor(title="Выбрать цвет")
+        if color_code:
+            self.selected_color = color_code[1]
+
     def save_image(self):
         self.image.save("pixel_art.bmp")
         print("Изображение сохранено как pixel_art.bmp")
@@ -115,6 +126,7 @@ class PixelArtApp:
             image = Image.open(file_path).convert("1")
             image = image.resize((GRID_SIZE, GRID_SIZE))
             self.pixels = self.image_to_pixel_array(image)
+            print(self.pixels)
             self.update_canvas()
             print("Изображение загружено и преобразовано в массив пикселей.")
 
