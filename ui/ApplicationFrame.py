@@ -1,7 +1,11 @@
 import tkinter as tk
 from tkinter import Button, Canvas, filedialog, Label, Entry
 from PIL import Image, ImageDraw
-
+from core.MultiLayerPerceptron import MultiLayerPerceptron
+from domain.ClassLabelMapping import ClassLabelMapping
+from loss.CrossEntropyLossFunction import CrossEntropyLossFunction
+from configuration.MultiLayerPerceptronConfiguration import MultiLayerPerceptronConfiguration
+from util.MatrixCsvLoader import MatrixCsvLoader
 
 GRID_SIZE = 32
 PIXEL_SIZE = 15
@@ -9,10 +13,17 @@ PIXEL_SIZE = 15
 
 class PixelArtApp:
     def __init__(self, root):
+        self.mlp = None
         self.root = root
         self.root.title("Pixel Art 32x32")
         main_frame = tk.Frame(self.root)
         main_frame.pack(padx=10, pady=10)
+
+        self.input_size = 32 * 32
+        self.hidden_layer_sizes = [128, 64]
+        self.output_size = 10
+        self.learning_rate = 0.2
+        self.loss_function = CrossEntropyLossFunction()
 
         self.canvas = Canvas(main_frame, width=GRID_SIZE * PIXEL_SIZE, height=GRID_SIZE * PIXEL_SIZE)
         self.canvas.grid(row=0, column=0, columnspan=4, padx=5, pady=5)
@@ -40,6 +51,9 @@ class PixelArtApp:
 
         self.train_button = Button(main_frame, text="Начать обучение", command=self.start_training)
         self.train_button.grid(row=4, column=0, columnspan=2, padx=5, pady=5)
+
+        self.train_button = Button(main_frame, text="Распознать", command=self.predict)
+        self.train_button.grid(row=4, column=1, columnspan=2, padx=5, pady=5)
 
         self.pixels = [[0 for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
         self.drawing = False
@@ -109,15 +123,29 @@ class PixelArtApp:
         for y in range(GRID_SIZE):
             for x in range(GRID_SIZE):
                 pixel_value = image.getpixel((x, y))
-                pixel_array[y][x] = 1 if pixel_value == 0 else 0
-        print(pixel_array)
+                pixel_array[y][x] = 1.0 if pixel_value == 0 else 0.0
         return pixel_array
 
     def start_training(self):
-        epochs = self.epochs_entry.get()
-        learning_rate = self.lr_entry.get()
-
+        epochs = int(self.epochs_entry.get())
+        learning_rate = float(self.lr_entry.get())
+        self.mlp = MultiLayerPerceptron(self.input_size,
+                                        self.hidden_layer_sizes,
+                                        self.output_size,
+                                        self.learning_rate,
+                                        self.loss_function,
+                                        MultiLayerPerceptronConfiguration(epochs))
+        training_data = self.load_data(r"C:\\Users\\Воронов Игорь\\Documents\\Dataset\\output_hyped.csv")
+        self.mlp.train(training_data)
         print(f"Начало обучения с {epochs} эпохами и скоростью обучения {learning_rate}.")
+
+    def load_data(self, file_path):
+        matrix_csv_loader = MatrixCsvLoader(file_path)
+        return matrix_csv_loader.load_data()
+
+    def predict(self):
+        predict = self.mlp.predict(sum(self.pixels, []))
+        print(f' Predicted: {ClassLabelMapping.REVERSE_MAPPING[predict]}')
 
 
 if __name__ == "__main__":

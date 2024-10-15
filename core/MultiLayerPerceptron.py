@@ -22,8 +22,8 @@ class MultiLayerPerceptron:
         for size in hidden_layer_sizes:
             self.layers.append(Layer(previous_size, size))
             previous_size = size
-
         self.layers.append(Layer(previous_size, output_size))
+        print(self.layers)
 
     def forward(self, inputs: List[float]) -> List[float]:
         output = inputs

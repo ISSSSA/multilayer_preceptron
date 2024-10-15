@@ -31,8 +31,6 @@ class MultiLayerPerceptronRunner:
 
     def test_model(self, validation_data):
         for input_data in validation_data:
-            predict = self.mlp.predict(input_data.data)
-            true_label = ClassLabelMapping.from_input_data(input_data)  # Правильное использование метода
-            print(f'True label: {true_label}, Predicted: {predict}')
+            predict = self.mlp.predict(input_data.data) # Правильное использование метода
+            print(f' Predicted: {predict}')
 
-# Инициализация и запуск
