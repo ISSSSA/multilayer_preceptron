@@ -13,11 +13,11 @@ import time
 
 class MultiLayerPerceptron:
     def __init__(self, input_size: int, hidden_layer_sizes: List[int], output_size: int,
-                 learning_rate: float, loss_function: LossFunction):
+                 learning_rate: float, loss_function: LossFunction, config: MultiLayerPerceptronConfiguration):
         self.layers = []
         self.learning_rate = learning_rate
         self.loss_function = loss_function
-
+        self.config = config
         previous_size = input_size
         for size in hidden_layer_sizes:
             self.layers.append(Layer(previous_size, size))
@@ -46,7 +46,7 @@ class MultiLayerPerceptron:
 
     def train(self, dataset: List[InputData]):
         metrics_builder = MetricsBuilder()
-        for epoch in range(1, MultiLayerPerceptronConfiguration.EPOCH_COUNT + 1):
+        for epoch in range(1, self.config.EPOCH_COUNT + 1):
             total_loss = 0.0
             random.shuffle(dataset)
             print(f"Epoch {epoch}:")

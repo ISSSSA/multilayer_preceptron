@@ -5,7 +5,9 @@ from loss.LossFunction import LossFunction
 
 
 class MultiLayerPerceptronConfiguration:
+    EPOCH_COUNT = 10
     default_activation_function: ActivationFunction = SigmoidActivationFunction()
     default_loss_function: LossFunction = CrossEntropyLossFunction()
 
-    EPOCH_COUNT: int = 10
+    def __init__(self, epochs: int = 10, ):
+        self.EPOCH_COUNT = epochs

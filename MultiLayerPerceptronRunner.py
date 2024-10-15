@@ -35,7 +35,4 @@ class MultiLayerPerceptronRunner:
             true_label = ClassLabelMapping.from_input_data(input_data)  # Правильное использование метода
             print(f'True label: {true_label}, Predicted: {predict}')
 
-
 # Инициализация и запуск
-runner = MultiLayerPerceptronRunner()
-runner.run()
